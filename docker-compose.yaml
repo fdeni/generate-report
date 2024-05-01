@@ -1,0 +1,27 @@
+version: '2.6'
+services:
+  mysql-db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: denif
+      MYSQL_DATABASE: test
+      MYSQL_USER: denif
+      MYSQL_PASSWORD: denif
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./internal-report/db-init.sql:/docker-entrypoint-initdb.d/db-init.sql
+    restart: always
+
+  internal-report:
+      build: .
+      environment:
+        MYSQL_HOST: mysql-db
+        MYSQL_PORT: 3306
+        MYSQL_USER: denif
+        MYSQL_PASSWORD: denif
+      ports:
+        - "8080:8080"
+      depends_on:
+        - mysql-db
+      restart: always
